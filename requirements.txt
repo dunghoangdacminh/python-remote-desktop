@@ -1,0 +1,11 @@
+# List of required libraries for remote desktop software
+
+# For handling socket connections
+socket
+
+# For threading support
+threading
+
+# For random password generation
+random
+string

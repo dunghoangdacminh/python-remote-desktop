@@ -1,11 +1,16 @@
+import signal
 import socket
 import threading
+
+def signal_handler(sig, frame):
+    print("\nTerminating the server...")
+    exit(0)
 
 def handle_client(client_socket, valid_password):
     while True:
         try:
-            message = client_socket.recv(1024).decode('utf-8')
-            if message == valid_password:
+            password = client_socket.recv(1024).decode('utf-8')
+            if password == valid_password:
                 client_socket.send("Connected successfully".encode('utf-8'))
                 while True:
                     message = client_socket.recv(1024).decode('utf-8')
@@ -22,10 +27,12 @@ def handle_client(client_socket, valid_password):
     client_socket.close()
 
 def start_server(ip, port, valid_password):
+    signal.signal(signal.SIGINT, signal_handler)
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((ip, port))
     server.listen(5)
     print(f"Server listening on {ip}:{port}")
+    print("Press Control + C to terminate.")
 
     while True:
         client_socket, addr = server.accept()
